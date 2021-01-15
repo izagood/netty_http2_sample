@@ -1,0 +1,5 @@
+builder.auth=true
+builder.pw=1234
+builder.url=http\://218.55.79.35\:8130/builder
+builder.user=jblee
+eclipse.preferences.version=1
