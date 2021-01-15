@@ -1,0 +1,17 @@
+package main.java.biz_push_sample1;
+
+
+public class App {
+	static String hi = "Hello World";
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		System.out.println(hi);
+	}
+	
+	public String returnHi() {
+		return hi;
+		
+	}
+
+}
