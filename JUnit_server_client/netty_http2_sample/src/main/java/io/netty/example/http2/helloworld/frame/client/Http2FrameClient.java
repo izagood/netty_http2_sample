@@ -46,7 +46,9 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
  * HTTP/2 server you are hitting doesn't support h2c/prior knowledge.
  */
 public final class Http2FrameClient {
-
+	/*
+	 * HTTP1 스타일 객체와 패턴을 사용하지 않는 HTTP2 client 코드
+	 * */
     static final boolean SSL = System.getProperty("ssl") != null;
     static final String HOST = System.getProperty("host", "127.0.0.1");
     static final int PORT = Integer.parseInt(System.getProperty("port", SSL? "8443" : "8080"));
@@ -58,7 +60,7 @@ public final class Http2FrameClient {
     public static void main(String[] args) throws Exception {
         final EventLoopGroup clientWorkerGroup = new NioEventLoopGroup();
 
-        // Configure SSL.
+        // SSL 컨텍스트 Configure
         final SslContext sslCtx;
         if (SSL) {
             final SslProvider provider =

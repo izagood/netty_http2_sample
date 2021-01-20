@@ -40,6 +40,7 @@ import io.netty.handler.ssl.ApplicationProtocolConfig.Protocol;
 import io.netty.handler.ssl.ApplicationProtocolConfig.SelectedListenerFailureBehavior;
 import io.netty.handler.ssl.ApplicationProtocolConfig.SelectorFailureBehavior;
 import io.netty.handler.ssl.ApplicationProtocolNames;
+import io.netty.handler.ssl.OpenSsl;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
@@ -58,7 +59,9 @@ import io.netty.util.CharsetUtil;
  * HTTP1-style objects and patterns.
  */
 public final class Http2Client {
-
+	/*
+	 *  HTTP2 통신을 위한 기본 세팅
+	 * */
     static final boolean SSL = System.getProperty("ssl") != null;
     static final String HOST = System.getProperty("host", "127.0.0.1");
     static final int PORT = Integer.parseInt(System.getProperty("port", SSL? "8443" : "8080"));
@@ -67,10 +70,10 @@ public final class Http2Client {
     static final String URL2DATA = System.getProperty("url2data", "test data!");
 
     public static void main(String[] args) throws Exception {
-        // Configure SSL.
+        // SSL 설정 forClient
         final SslContext sslCtx;
         if (SSL) {
-            SslProvider provider = SslProvider.OPENSSL;
+            SslProvider provider = OpenSsl.isAlpnSupported() ? SslProvider.OPENSSL : SslProvider.JDK;
             sslCtx = SslContextBuilder.forClient()
                 .sslProvider(provider)
                 /* NOTE: the cipher filter may not include all ciphers required by the HTTP/2 specification.
@@ -91,10 +94,11 @@ public final class Http2Client {
         }
 
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+        // Http2FrameClient와 차이점
         Http2ClientInitializer initializer = new Http2ClientInitializer(sslCtx, Integer.MAX_VALUE);
 
         try {
-            // Configure the client.
+            // client 설정
             Bootstrap b = new Bootstrap();
             b.group(workerGroup);
             b.channel(NioSocketChannel.class);
